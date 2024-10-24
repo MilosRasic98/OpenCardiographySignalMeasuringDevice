@@ -99,3 +99,18 @@ When everything is connected as shown in the picture below, connect the system u
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Ox0LqK-V76g/0.jpg)](https://www.youtube.com/watch?v=Ox0LqK-V76g)
 
+## Results
+
+In this section, I will showcase the results calculated based on the measurements with the device. Before I start showing graphs, I'll give a short introduction to how blood pressure is measured both manually and automatically. This of course is only considering non-invasive methods, and even in 2024, the gold standard for blood pressure measurement is still the manual approach which includes a regular stethoscope and a hand pump.
+
+### Manual Blood Pressure Measurement
+
+Manual blood pressure measurement takes advantage of what is known as Korotkoff sounds. These are the sounds that can be heard using the stethoscope during the process of measuring blood pressure. This process works by putting an arm cuff above the elbow and starting to inflate it using the hand pump. As the pressure inside the cuff goes up, the cuff squeezes the arm and constricts blood flow through the brachial artery, until the pressure in the cuff goes above the SYS pressure. At that moment, blood circulation is cut off. The doctor measuring blood pressure can recognize this by hearing no sounds on the stethoscope, at that moment, he starts opening a small manual valve to slowly let the air out of the cuff. At the moment that the pressure in the cuff equalizes with the SYS pressure, Korotkoff sounds appear, which present themselves as "banging" noises on the stethoscope. The moment the sounds appear is the moment when we look at the gauge and read the SYS pressure. As the pressure continues to drop in the cuff, the Korotkoff sounds will persist as long as the pressure in the cuff is above the DIA pressure. During this time, the blood flow is turbulent. As the pressure in the cuff falls below the DIA pressure, the blood flow becomes linear and the Korotkoff sounds disappear. This is the moment where we read the DIA pressure on the gauge. This process is illustrated in the picture below, where the blue line represents the air pressure in the cuff, while the red line shows the blood pressure we are measuring.
+
+![ManualBPM](https://github.com/user-attachments/assets/24752d29-4685-4240-a08c-645cf9203214)
+
+### Automatic Blood Pressure Measurement
+
+With the advance of technology, many devices with different algorithms have been developed for measuring blood pressure automatically, and are something that can be found in pretty much every household today. One thing to note here is that these devices work on completely unknown algorithms, and there is no proper way of validating the results they calculate. This is why the manual method is still considered a gold standard in 2024 and also why the criteria for blood pressure monitors is rather low. A blood pressure monitor is considered to be in class A (highest class) if its measurements are in +/- 15 mmHg for the SYS pressure in 85% of the measurements. Considering that if the SYS is 135 mmHg, the device is considered working properly if it's between 120 mmHg and 150 mmHg, this poses a big issue of how trustworthy these devices are.
+
+I'll explain here one of the more well-known algorithms for estimating blood pressure which works by analysing the envelope of the signal. 
