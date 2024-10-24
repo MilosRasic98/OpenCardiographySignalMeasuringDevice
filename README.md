@@ -34,9 +34,11 @@ For electronics, a custom 4-layer PCB has been developed that uses the Raspberry
 5. Stethoscope Conditioning Signals - The original idea was to use a stethoscope with an AUX output, 3 different circuits are present on the PCB for conditioning the signal so that it can be safely measured with the Pi Pico W ADC. There is a DIP switch for disabling individual circuits.
 6. AD8232 ECG - The AD8232 is used for measuring the ECG signals, it was designed according to the datasheet for measuring ECG with 3 electrodes so that the signal can be analyzed for morphology.
 
-The PCB can be powered ON by either using a switch or a button and then latching the EN pin on the buck-boost converter using the Raspberry Pi Pico W. The finished PCB design (V1) is shown in the picture below.
+The PCB can be powered ON by either using a switch or a button and then latching the EN pin on the buck-boost converter using the Raspberry Pi Pico W. The finished PCB design (V1) is shown in the picture below and below that is the PCB during the testing process.
 
 ![pcb2d](https://github.com/user-attachments/assets/b3934740-72e7-4d4e-a0ad-a4e98b39c532)
+
+![PXL_20240524_074411466~2](https://github.com/user-attachments/assets/475f9fa1-d02b-4ce4-ae06-ecb358f0e528)
 
 For the sake of proper USB isolation and noise reduction around the switching converters, PCB cutouts, and plane breaks were added where necessary, as can be seen in the pictures below.
 
@@ -59,8 +61,41 @@ The software for this project is currently split into three different codes and 
 2. Graphical Interface - Python - Visual Studio Code - Code that enables easy use of the device and shows all of the measurements in real-time. It also enables users to record all of the data into a CSV file.
 3. Data Analysis - Python - Google Colaboratory - Code that analyses all of the data recorded and stored in the CSV directories.
 
-## Testing
+## Additional Hardware
 
+Besides the main device that has been shown above, there are three more things developed that are used with this device. These include the PPG clamp, a custom stethoscope, and an apparatus for calibrating the pressure sensor. If you intend only to measure ECG signals, none of these are needed, however, if you want to measure the air pressure inside the arm cuff, you'll need a way to calibrate the system, for which the apparatus is used. Also, if you want to have PPG or stethoscope measurements, you'll need them as well.
 
+### PPG Clamp
 
+The mechanical parts of the PPG clamp are 3D printed out of PLA as well, and the clamp is made around a MikroElektronika Oxy 5 Click, which interfaces with the system over I2C. While the outside clamp is not necessary, it provides constant pressure of the finger on the sensor, and it also blocks out outside light which helps with having better measurements. The clamp is shown in the picture below.
+
+![ppg_joines](https://github.com/user-attachments/assets/a397b254-113d-4a96-87e0-3dc1f6c6ab3c)
+
+### Stethoscope
+
+The stethoscope that everyone has seen is an analog device that amplifies the sound so that the doctor can listen to different things such as breathing or listen to how the heart is beating. To connect this analog device to the rest of the system, the earphones were removed and a small piezo microphone was inserted into a tube so that it forms an air-tight seal. This microphone was then connected to an amplifier circuit that then goes to the analog pin of our device. The stethoscope is shown in the picture below.
+
+![stethoscope_merged](https://github.com/user-attachments/assets/2669d604-1499-4c28-bb0e-495e3579502d)
+
+### Pressure Sensor Calibration Apparatus
+
+When looking at the pressure sensor datasheet, the main thing we can see is that it has a linear response to the pressure. The problem here is that we are using a potentiometer to adjust the amplification, so we don't know what voltage translates to what pressure (We can always do calculations based on the potentiometer resistance and the INA826 datasheet, but it's more accurate to confirm using a calibration apparatus). This is why the calibration apparatus has been made, it can be seen in the pictures below.
+
+![PXL_20240521_131159092 MV~2](https://github.com/user-attachments/assets/5a342343-4d18-4d1e-a9f0-82be679fcd40)
+
+![PXL_20240521_131219779 MV~2](https://github.com/user-attachments/assets/0cc5a80f-6ffd-4447-9dba-f9c1b239adb5)
+
+The way the apparatus works is by being able to keep a constant pressure in the system that can be adjusted using the two screws pushing the two plungers of the syringes. In the front, there are three air pressure gauges (one is enough, three were used to do cross-validation). We want to use this apparatus by first connecting the apparatus to the pressure sensor on our PCB and then slowly adjusting the potentiometer and the apparatus so that we get to the point where we are reading 3.3 V at 40 kPa (300 mmHg). This ensures that we can cover the whole possible range while measuring blood pressure while also maximizing the capabilities of the ADC on the Pico W. While it would be enough to test in two points since the manufacturer specified a linear response, calibration was done in 40 points to ensure the sensor is working properly. Results of the calibration process are shown below, where the dots show the individual measurements, and the line is estimated using the least mean square method.
+
+![GrafikKalibracije](https://github.com/user-attachments/assets/f93ad959-a090-4e92-8087-e2f8b5380a89)
+
+## Testing Process
+
+The testing was done by comparing the results to a commercially available device. For this, the Wellue BP2 was used since it gives the Mean Arterial Pressure (MAP) measurement, besides the Systolic (SYS), Diastolic (DIA), and heart rate (HR) measurements. The person is supposed to first sit on a chair for at least 5 minutes with legs on the floor. After that, the initial measurement with the commercial device should be conducted. When that is complete, there should be at least a minute between consecutive measurements. For properly measuring the signals, follow the picture below.
+
+![ElectrodePlacement](https://github.com/user-attachments/assets/70e31256-a3b0-45ab-a292-b72a4421442c)
+
+When everything is connected as shown in the picture below, connect the system using a USB cable. In the GUI connect to the device by selecting the proper COM port and setting the baud rate to 115200. After that, enable the signals you want to record, and start the stream. When you want to start recording the measurements, enter the CSV file name and click record. This can be seen in a short demo video below, click on the picture to open the video.
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/Ox0LqK-V76g/0.jpg)](https://www.youtube.com/watch?v=Ox0LqK-V76g)
 
