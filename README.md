@@ -11,6 +11,10 @@ Through this project, I wanted to test out different algorithms for measuring bl
 
 For things like the BOM and the implemented commands, please check this Google Sheet which is updated as soon as something new is added: https://docs.google.com/spreadsheets/d/1H5B5Kw3XJPlpduM7bu2WPejcbya2c3x0Nj9kcexb-uc/edit?usp=sharing
 
+You can take a look at the CAD models and download them from Printables as well:
+1. Main Device:
+2. PPG Clamp: 
+
 ![finishedproject](https://github.com/user-attachments/assets/3d7f81b8-b60e-4c6c-960e-c398776fe47c)
 
 ![ThePerfectScreenshot](https://github.com/user-attachments/assets/368944a1-6a58-4c0e-9c11-c1480826d5d4)
@@ -91,7 +95,7 @@ The way the apparatus works is by being able to keep a constant pressure in the 
 
 ## Testing Process
 
-The testing was done by comparing the results to a commercially available device. For this, the Wellue BP2 was used since it gives the Mean Arterial Pressure (MAP) measurement, besides the Systolic (SYS), Diastolic (DIA), and heart rate (HR) measurements. The person is supposed to first sit on a chair for at least 5 minutes with legs on the floor. After that, the initial measurement with the commercial device should be conducted. When that is complete, there should be at least a minute between consecutive measurements. For properly measuring the signals, follow the picture below.
+The testing was done by comparing the results to a commercially available device. For this, the Wellue BP2 was used since it gives the Mean Arterial Pressure (MAP) measurement, besides the Systolic (SYS), Diastolic (DIA), and heart rate (HR) measurements. The person is supposed to first sit on a chair for at least 5 minutes with legs on the floor. After that, the initial measurement with the commercial device should be conducted. When that is complete, there should be at least a minute between consecutive measurements. To properly measure the signals, follow the picture below.
 
 ![ElectrodePlacement](https://github.com/user-attachments/assets/70e31256-a3b0-45ab-a292-b72a4421442c)
 
@@ -113,4 +117,112 @@ Manual blood pressure measurement takes advantage of what is known as Korotkoff 
 
 With the advance of technology, many devices with different algorithms have been developed for measuring blood pressure automatically, and are something that can be found in pretty much every household today. One thing to note here is that these devices work on completely unknown algorithms, and there is no proper way of validating the results they calculate. This is why the manual method is still considered a gold standard in 2024 and also why the criteria for blood pressure monitors is rather low. A blood pressure monitor is considered to be in class A (highest class) if its measurements are in +/- 15 mmHg for the SYS pressure in 85% of the measurements. Considering that if the SYS is 135 mmHg, the device is considered working properly if it's between 120 mmHg and 150 mmHg, this poses a big issue of how trustworthy these devices are.
 
-I'll explain here one of the more well-known algorithms for estimating blood pressure which works by analysing the envelope of the signal. 
+I'll explain here one of the more well-known algorithms for estimating blood pressure which works by analysing the envelope of the signal. To give you a better idea of what I'm talking about, I'll first show you the pressure measurement in the cuff during a blood pressure measurement test, which is shown in the picture below.
+
+![BPM_fig2_PritisakUTokuIspumpavanja](https://github.com/user-attachments/assets/edb67015-6d90-4b62-b7e1-aea8b05a95bd)
+
+The picture above shows only the part of the signal while the arm cuff is deflating. If you take a closer look at the signal, you can see that pulsations start appearing as the pressure decreased, their amplitudes grow, and at one point the amplitude starts going down. This is what we want to analyze but to do that, we need to pass the signal through a high pass filter and detrend the signal. Once we do that, we can estimate an envelope for that signal and continue with the algorithm. The moment in which the envelope reaches its maximum value is the moment in which the air pressure in the cuff is equal to the MAP. Now, according to the algorithm I am using (Sapinsky) we take the value of the MAP amplitude and find the moments in time where the envelope is equal to 40% of MAP and 80% of MAP. These are the moments at which we measure the SYS and DIA pressures. This is illustrated in the picture below.
+
+![AutomaticBPM](https://github.com/user-attachments/assets/ffeb5840-62f6-49e7-a1d0-152e4b1f08b9)
+
+### Signal Analysis
+
+In this section, I'll give a short demonstration of signal analysis on the measurements I recorded during testing. This will include analyzing the data from the arm cuff, PPG, stethoscope, and ECG. The code I used for analyzing this data as well as a data set that was analyzed here can be found in this GitHub repository, so you can play around with the data if you want! At the end of the signal analysis, I'll show how the results hold up to the commercial device.
+
+#### Arm Cuff Pressure Signal
+
+I'll begin by analyzing the arm cuff pressure signal since that was the main focus of my work. First, in the picture below is the signal in the arm cuff during the whole blood pressure measuring procedure. You can see the pressure rising steeply while the pump is turned on, as well as the pressure going down as the cuff slowly deflates with a sudden release at the very end when the electromagnetic valve is triggered.
+
+![BPM_fig1_PritisakUManzetniUTokuMerenja](https://github.com/user-attachments/assets/5363fde4-081a-4c7a-b530-de0fd1c9e5f0)
+
+As mentioned in the algorithm explanation above, we are interested in the part of the signal where the arm cuff is being slowly deflated, as this part of the signal contains the data we are interested in. For this test, the arm cuff was inflated manually to a high pressure, modern devices do a rough estimate of the SYS pressure while inflating the cuff and they inflate it about 30 mmHg above that value and then they start the deflation process. This is done for patient comfort since high pressures can be painful on the arm. In the picture, you can see the part of the signal where the arm cuff is deflating.
+
+![BPM_fig2_PritisakUTokuIspumpavanja](https://github.com/user-attachments/assets/310fdd0b-8ae9-4315-b164-2fd0e11c0c1f)
+
+Before estimating the envelope, we need to filter the signal first. The two pictures below show the signal filtering process, if you're interested in the details about the filter, check the code where you can see the filter type, order, and cut-off frequency.
+
+![BPM_fig8_Detrending](https://github.com/user-attachments/assets/13281cae-77a5-48d1-b97e-b01cec59c660)
+
+![BPM_fig3_PritisakUTokuIspumpavanja-Filtriran](https://github.com/user-attachments/assets/b517456d-27ce-4f35-8acd-59282fc07b37)
+
+Now that the signal has been filtered, we can estimate the envelope of the signal. Besides the envelope, we can find the peaks in the signal which correlate to the heart beats, so we can calculate the heart rate from them.
+
+![BPM_fig5_PritisakUTokuIspumpavanja-Filtriran-Pikovi-Anvelopa](https://github.com/user-attachments/assets/e269a0bf-bc72-417c-9adf-310e1cf658c1)
+
+As you can see from the picture above, the signal is not ideal. We don't have the ideal envelope as expected and as was shown in the drawing above. Nevertheless, this signal can still be used for estimating the SYS and DIA pressures. Before we do that, we need to find the max value of the envelope to find the moments for measuring the SYS and DIA pressures. This is shown in the picture below.
+
+![BPM_fig6_PritisakUTokuIspumpavanja-Filtriran-Pikovi-Anvelopa-SYS-DIA-MAP](https://github.com/user-attachments/assets/868a057b-6a79-49d7-a978-32d2e0f42948)
+
+Using those time moments that we calculated based on the graph in the picture above, we can return to the original pressure signal, and see what was the pressure in the arm cuff in those moments. This is how we calculate the MAP, SYS, and DIA, while we use the peaks for calculating the HR. Below is the picture of that, you can see the final results at the bottom of this section with the comparison.
+
+![BPM_fig7_PritisakUTokuIspumpavanja-SYS-DIA-MAP](https://github.com/user-attachments/assets/e79769bb-91e0-456d-a241-4b57a61d02c2)
+
+#### Stethoscope Signal Analysis
+
+I wanted to use the signal from the stethoscope as an experimental way of estimating the SYS pressure based on the description of how we measure blood pressure using Korotkoff sounds. My idea was to try and see when the pulsations become somewhat regular, or better said when they start matching the heart rhythm and taking the beginning of that as the moment for reading the SYS pressure. In the two pictures below, you can see the signal from the stethoscope recorded at the same time as the air pressure signal above as well as the stethoscope signal during the arm cuff deflation phase.
+
+![AUX_fig1_CeloMerenjePritiska](https://github.com/user-attachments/assets/17796d6d-8121-4c76-9fd7-9a017eb5448e)
+
+![AUX_fig2_Ispumpavanje](https://github.com/user-attachments/assets/130c2d55-15ad-4c34-b0f6-44098bddf6b7)
+
+Here I detected the peaks, and you can see a clear difference from the third peak and how there are no missed pulsations. This is the time moment I wanted to use for the SYS pressure and we can also use those peaks to calculate the HR. 
+
+![AUX_fig3_Ispumpavanje-Vrhovi](https://github.com/user-attachments/assets/f9b699d2-f293-4fad-9cf9-65bb352ac630)
+
+Using the time moment of the third peak, we return to the pressure signal in the arm cuff to read the pressure at that moment.
+
+![AUX_fig5_MerenjeSistolnogPritiska](https://github.com/user-attachments/assets/785828ee-978c-4273-a7fa-b166f86adeb3)
+
+#### PPG Signal Analysis
+
+PPG works by measuring the reflected light at different wavelengths, and based on that signal, we can calculate both the HR and the blood oxygen saturation. For now, I will only look at the signal for measuring the HR, because we can use it really nicely for estimating the DIA pressure. As I've mentioned above when the pressure in the arm cuff is dropping, the blood flow in the arm goes from turbulent to laminar, and the PPG sensor is designed for measurements when the blood flow is laminar. We can see this in the signal by the first flatlining signal, followed by pulsations as the laminar blood flow returns to the arm. In the two pictures below, you can see the PPG signal from the whole measurement and then only from the section where the arm cuff is deflating.
+
+![PPG_fig1_FotopletizmografskiSignalUTokuMerenjaKrvnogPritiska](https://github.com/user-attachments/assets/a34fee89-4184-4ea3-97cf-27d64e998c86)
+
+![PPG_fig2_FotopletizmografskiSignalUTokuIspumpavanjaManzetne](https://github.com/user-attachments/assets/d5800a85-d2e2-47a1-b832-5798001e40a8)
+
+I then passed the signal through a filter in the same way I did with the pressure signal shown above. So the two pictures below show the signal filtering process.
+
+![PPG_fig6_Detrending](https://github.com/user-attachments/assets/d3823d6c-d476-4dfe-94c9-522e364e0526)
+
+![PPG_fig3_FiltriranPPGSignal](https://github.com/user-attachments/assets/70c069b3-11d8-4c3d-a84e-83fa14bc6e08)
+
+What we want to do now is find the peaks in the signal to find the moment when the pulsations appear again. This is the moment we will use to measure the DIA pressure. This is shown in the pictures below.
+
+![PPG_fig4_FiltriranPPGSignal-Vrhovi](https://github.com/user-attachments/assets/e2acf14b-1d3c-451e-8a21-f4086f1bf892)
+
+![PPG_fig5_PPG-IzmerenDijastolniPritisak](https://github.com/user-attachments/assets/65913a88-d0f6-488b-b91d-069b91505ccf)
+
+#### ECG Signal Analysis
+
+In the end, we have the ECG signal. While there is some experimental work for measuring blood pressure by measuring the time delay between R peaks in the ECG signal and the pulsations on the PPG, I will only use the ECG to validate the HR measurement of the other methods and show the morphology of a recorded heartbeat. A section of the measurement is shown in the picture below.
+
+![ECG_fig2_EKG_DeoMerenja](https://github.com/user-attachments/assets/446184a1-a563-4384-9586-4103bc573527)
+
+By detecting the R peaks, we can easily calculate the HR. We can also use that data from ECG to analyze heart rate variability which is a topic I won't be getting into here. But you can see the time between heartbeats in the picture below.
+
+![ECG_fig3_EKG_HRV](https://github.com/user-attachments/assets/b12a4b75-b067-488c-b454-e41e8de237a5)
+
+And in the end, you can see a single heartbeat that was extracted from the measurement.
+
+![ECG_fig4_EKG_JedanOtkucaj](https://github.com/user-attachments/assets/16c3c4b9-9f44-4418-aea6-440927cfe108)
+
+### Final Results
+
+Before showing you the final results from the signal analysis, let's take a look at the measurement done with the Wellue BP2 Blood Pressure monitor. Its results are shown in the picture below.
+
+![Screenshot_20240812-110924](https://github.com/user-attachments/assets/c944af50-86e1-464f-b8f0-904b45fe2380)
+
+Now, let's compare that to the results we estimated from our measurements, this is shown in the table below.
+
+| | Mean Arterial Pressure (MAP) [mmHg] | Systolic Pressure (SYS) [mmHg]  | Diastolic Pressure (DIA) [mmHg] | Heart Rate (HR) [BPM] |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| Wellue BP2 | 93 | 130 | 72 | 81 |
+| Arm Cuff Air Pressure | 91 | 132 | 79 | 78 |
+| Stethoscope | X | 143 | X | 80 |
+| PPG | X | X | 75 | 80 |
+| ECG | X | X | X | 80 |
+
+As you can see from the table, the results obtained from the data analysis are pretty good when compared to the commercial device. This is of course one data set and all of this requires much more testing, but it's still rewarding to see promising results. Estimating the SYS pressure using the stethoscope didn't give the best estimation, but this needs more experimenting with things like stethoscope placement, pressure, and so on. One thing that gave really good results was the PPG estimation of the DIA pressure, it's more spot-on than the analysis of the pressure in the arm cuff.
+
+If you have any comments or questions about anything you've seen here, feel free to write to me! Some of the pictures have writing in Serbian but the graphs should be clear based on the units, if you're still struggling with any of that, feel free to contact me!
