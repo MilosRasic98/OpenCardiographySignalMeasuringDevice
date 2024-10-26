@@ -12,8 +12,8 @@ Through this project, I wanted to test out different algorithms for measuring bl
 For things like the BOM and the implemented commands, please check this Google Sheet which is updated as soon as something new is added: https://docs.google.com/spreadsheets/d/1H5B5Kw3XJPlpduM7bu2WPejcbya2c3x0Nj9kcexb-uc/edit?usp=sharing
 
 You can take a look at the CAD models and download them from Printables as well:
-1. Main Device:
-2. PPG Clamp: 
+1. Main Device: https://www.printables.com/model/1052466-open-cardiography-signal-measuring-device 
+2. PPG Clamp: https://www.printables.com/model/1052459-ppg-clamp 
 
 ![finishedproject](https://github.com/user-attachments/assets/3d7f81b8-b60e-4c6c-960e-c398776fe47c)
 
