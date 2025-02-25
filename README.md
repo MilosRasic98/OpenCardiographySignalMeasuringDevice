@@ -11,6 +11,8 @@ Through this project, I wanted to test out different algorithms for measuring bl
 
 For things like the BOM and the implemented commands, please check this Google Sheet which is updated as soon as something new is added: https://docs.google.com/spreadsheets/d/1H5B5Kw3XJPlpduM7bu2WPejcbya2c3x0Nj9kcexb-uc/edit?usp=sharing
 
+The project is featured in the MagPi Magazine issue 150, you can check it out here: https://magpi.raspberrypi.com/issues/150
+
 You can take a look at the CAD models and download them from Printables as well:
 1. Main Device: https://www.printables.com/model/1052466-open-cardiography-signal-measuring-device 
 2. PPG Clamp: https://www.printables.com/model/1052459-ppg-clamp 
