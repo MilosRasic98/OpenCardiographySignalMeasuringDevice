@@ -1,5 +1,7 @@
 # OpenCardiographySignalMeasuringDevice
 
+**VIDEO OUT WITH DETAILED PROJECT EXPLANATIONS - CHECK BELOW!**
+
 This repository covers the development process of hardware and software and results analysis, for an open-source Cardiography Signal Measuring Device. On this page, you will be able to find all of the CAD files for the 3D printed parts, Gerber files for PCB fabrication, all of the code needed for the project, and test results of the data analysis. If you have any questions or comments, feel free to contact me! The main goal of the project was to be able to record, store, and analyze these signals:
 
 1. Arm Cuff Air Pressure Signals
@@ -8,6 +10,12 @@ This repository covers the development process of hardware and software and resu
 4. Photoplethysmography Signals (PPG)
 
 Through this project, I wanted to test out different algorithms for measuring blood pressure either by using just the air pressure signals from the arm cuff or those signals in combination with the other measurements, at the bottom of this page, you can take a look at the results. This project was developed as my Master's Thesis project at the University of Belgrade—School of Electrical Engineering (www.etf.bg.ac.rs), under the mentorship of Prof. Nadica Miljković. In the two pictures below you can see how the finished device looks and the design of the graphical interface for controlling the device.
+
+For more detailed explanations about everything from electronics, to 3D printing, to measurements and data analysis, click the thumbnail below to check out the video!
+
+[![Watch the video](https://img.youtube.com/vi/5UgFEHPnKJY/hqdefault.jpg)](https://www.youtube.com/watch?v=5UgFEHPnKJY)
+
+Details and discussion about the project can be found on the Element14 Community: [E14 - CardiographyProject](https://community.element14.com/challenges-projects/element14-presents/project-videos/w/documents/71947/building-an-open-source-blood-pressure-heart-signal-monitor----episode-674?ICID=HP-674-Building-an-Open-Source-Blood-Pressure-Signal-Monitor-JULY25-WF4122160)
 
 For things like the BOM and the implemented commands, please check this Google Sheet which is updated as soon as something new is added: https://docs.google.com/spreadsheets/d/1H5B5Kw3XJPlpduM7bu2WPejcbya2c3x0Nj9kcexb-uc/edit?usp=sharing
 
