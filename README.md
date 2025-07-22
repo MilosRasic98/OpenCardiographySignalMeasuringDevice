@@ -1,7 +1,9 @@
 # OpenCardiographySignalMeasuringDevice
 
 **VIDEO OUT WITH DETAILED PROJECT EXPLANATIONS - CHECK BELOW!**
+
 **DISCLAIMER: THIS IS A DEVICE INTENDED SOLELY FOR RESEARCH PURPOSES AND NOT A MEDICAL DEVICE INTENDED FOR CLINICAL OR DIAGNOSIS USE.**
+
 This repository covers the development process of hardware and software and results analysis, for an open-source Cardiography Signal Measuring Device. On this page, you will be able to find all of the CAD files for the 3D printed parts, Gerber files for PCB fabrication, all of the code needed for the project, and test results of the data analysis. If you have any questions or comments, feel free to contact me! The main goal of the project was to be able to record, store, and analyze these signals:
 
 1. Arm Cuff Air Pressure Signals
